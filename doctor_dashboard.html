@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4">👨‍⚕️ Área do Médico</h2>
+
+<h4 class="mb-3">⏳ Pendentes</h4>
+<div class="table-responsive mb-4">
+  <table class="table table-bordered bg-white">
+    <thead><tr><th>Paciente</th><th>Data</th><th>Motivo</th><th>Ações</th></tr></thead>
+    <tbody>
+      {% for appt in pending %}
+      <tr>
+        <td>{{ appt.patient.username }}</td>
+        <td>{{ appt.date.strftime('%d/%m/%Y') }}</td>
+        <td>{{ appt.reason }}</td>
+        <td>
+          <form action="{{ url_for('approve_appointment', appt_id=appt.id) }}" method="POST" class="d-inline">
+            <button class="btn btn-sm btn-success">✅ Aprovar</button>
+          </form>
+          <form action="{{ url_for('reject_appointment', appt_id=appt.id) }}" method="POST" class="d-inline ms-2">
+            <button class="btn btn-sm btn-danger">❌ Rejeitar</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="4" class="text-muted text-center py-3">Nenhuma solicitação pendente.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="row">
+  <div class="col-md-6 mb-4">
+    <h5>✅ Aprovadas</h5>
+    <ul class="list-group">
+      {% for appt in approved %}
+      <li class="list-group-item">{{ appt.patient.username }} - {{ appt.date.strftime('%d/%m/%Y') }} - {{ appt.reason }}</li>
+      {% else %}<li class="list-group-item text-muted">Nenhuma.</li>{% endfor %}
+    </ul>
+  </div>
+  <div class="col-md-6">
+    <h5>❌ Rejeitadas</h5>
+    <ul class="list-group">
+      {% for appt in rejected %}
+      <li class="list-group-item text-muted">{{ appt.patient.username }} - {{ appt.date.strftime('%d/%m/%Y') }} - {{ appt.reason }}</li>
+      {% else %}<li class="list-group-item text-muted">Nenhuma.</li>{% endfor %}
+    </ul>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4">👤 Área do Paciente</h2>
+
+<div class="card mb-4">
+  <div class="card-header bg-white fw-bold">Solicitar Nova Consulta</div>
+  <div class="card-body">
+    <form method="POST">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label">Médico</label>
+          <select name="doctor_id" class="form-select" required>
+            {% for doc in doctors %}<option value="{{ doc.id }}">{{ doc.username }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Data</label>
+          <input type="date" name="date" class="form-control" required min="{{ today }}">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Motivo</label>
+          <input type="text" name="reason" class="form-control" placeholder="Ex: Check-up anual" required>
+        </div>
+      </div>
+      <button class="btn btn-primary mt-3">📅 Solicitar</button>
+    </form>
+  </div>
+</div>
+
+<h4 class="mb-3">📋 Minhas Solicitações</h4>
+<table class="table table-hover bg-white rounded shadow-sm">
+  <thead class="table-light"><tr><th>Médico</th><th>Data</th><th>Motivo</th><th>Status</th></tr></thead>
+  <tbody>
+    {% for appt in appointments %}
+    <tr>
+      <td>{{ appt.doctor.username }}</td>
+      <td>{{ appt.date.strftime('%d/%m/%Y') }}</td>
+      <td>{{ appt.reason }}</td>
+      <td>
+        {% if appt.status == 'pending' %}<span class="badge bg-warning text-dark">⏳ Pendente</span>
+        {% elif appt.status == 'approved' %}<span class="badge bg-success">✅ Aprovada</span>
+        {% else %}<span class="badge bg-danger">❌ Rejeitada</span>{% endif %}
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="4" class="text-muted">Nenhuma consulta solicitada ainda.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
